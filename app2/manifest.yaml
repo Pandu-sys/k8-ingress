@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-2 
+  # these are the labels related to deployment resource
+  labels:
+    app: app-2 
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: app-2
+  template:
+    metadata:
+      labels:
+        app: app-2
+    spec:
+      containers:
+      - name: app-2
+        image: pandu15/app2
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-2 
+  # servicer labels
+  labels:
+    app: app-2 
+spec:
+# service uses the below labels to select the pods
+  selector:
+    app: app-2 
+  ports:
+   - protocol: TCP
+     port: 80 # service port
+     targetPort: 80 # container port
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-2 
+  annotations: 
+     alb.ingress.kubernetes.io/scheme: internet-facing
+     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
+     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:978092319764:certificate/762b04f2-b775-4b1d-a549-778ade043709
+     alb.ingress.kubernetes.io/target-type: ip
+     alb.ingress.kubernetes.io/tags: Environment=dev, Team=test
+
+spec:
+  ingressClassName: alb
+  rules:
+  - host: "app1.devopswithrani.online"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: app-2 
+            port:
+              number: 80
