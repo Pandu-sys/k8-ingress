@@ -1,0 +1,12 @@
+apiVersion: gateway.k8s.aws/v1
+kind: LoadBalancerConfiguration
+metadata:
+  name: roboshop-alb
+  namespace: roboshop
+spec:
+  scheme: internet-facing
+  ipAddressType: ipv4
+  listenerConfigurations:
+  - protocolPort: HTTPS:443
+    certificates:
+    - arn:aws:acm:us-east-1:978092319764:certificate/824c2b55-8433-41aa-87be-eb4dceffb197
