@@ -2,7 +2,7 @@
 '''
 eksctl utils associate-iam-oidc-provider \
     --region us-east-1 \
-    --cluster roboshop \
+    --cluster roboshop-dev \
     --approve
 '''
 
@@ -21,7 +21,7 @@ aws iam create-policy \
 4. Create SA
 '''
 eksctl create iamserviceaccount \
---cluster=roboshop \
+--cluster=roboshop-dev \
 --namespace=kube-system \
 --name=aws-load-balancer-controller \
 --attach-policy-arn=arn:aws:iam::978092319764:policy/AWSLoadBalancerControllerIAMPolicy \
@@ -32,6 +32,7 @@ eksctl create iamserviceaccount \
 5. Install AWS LoadBalancer Controller Drivers
 '''
 helm repo add eks https://aws.github.io/eks-charts
+helm repo update 
 
-helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=roboshop --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=roboshop-dev --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller
 '''
